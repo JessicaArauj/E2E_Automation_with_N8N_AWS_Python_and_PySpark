@@ -3,6 +3,7 @@ name: Fixed Broadband Data Scraping
 on:
   schedule:
     - cron: "0 8 1 * *"  # At 08:00 UTC on the 1st day of each month
+  workflow_dispatch:
 
 jobs:
   run-python-and-commit:
@@ -34,3 +35,4 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
