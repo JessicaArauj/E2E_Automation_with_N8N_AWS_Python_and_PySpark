@@ -31,7 +31,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add dados/*
-          git commit -m "Update fixed broadband data"
-          git push
+          git diff --cached --quiet || git commit -m "Update fixed broadband data"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/JessicaArauj/FIEC_Test.git HEAD:main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
