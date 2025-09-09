@@ -38,7 +38,7 @@ extracted_files = os.listdir(extract_dir)
 print("Extracted files:", extracted_files)
 print(f"Number of extracted files: {len(extracted_files)}")
 
-repo_data_dir = os.path.join(current_dir, "dados")
+repo_data_dir = os.path.join(current_dir, "data")
 os.makedirs(repo_data_dir, exist_ok=True)
 
 for file_name in os.listdir(extract_dir):
