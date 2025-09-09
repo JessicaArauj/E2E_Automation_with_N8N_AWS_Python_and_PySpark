@@ -34,4 +34,4 @@ jobs:
           git diff --cached --quiet || git commit -m "Update fixed broadband data"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/JessicaArauj/FIEC_Test.git HEAD:main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
