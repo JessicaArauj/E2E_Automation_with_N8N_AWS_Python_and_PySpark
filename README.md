@@ -18,4 +18,4 @@ Solução de engenharia de dados para automatizar o fluxo de coleta, armazenamen
 - **AWS S3** utilizando um bucket como Data Lake
 - **N8N** para orquestração de workflows e integrações
 - **API REST** para disponibilização dos dados
-- **Firebase Studio** utilizando uma interface gráfica para processamento de linguagem natural.
+- **Firebase Studio** utilizando uma interface gráfica para processamento de linguagem natural
