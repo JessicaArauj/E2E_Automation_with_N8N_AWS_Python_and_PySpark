@@ -1,0 +1,404 @@
+{
+  "name": "FIEC",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -784,
+        -176
+      ],
+      "id": "cc5cd794-cc3a-4ea6-b8a9-47f1d631b27d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "15GH7zhC6d1bjgJl0dPupu89xmcRksQmv",
+          "mode": "list",
+          "cachedResultName": "extraction.py",
+          "cachedResultUrl": "https://drive.google.com/file/d/15GH7zhC6d1bjgJl0dPupu89xmcRksQmv/view?usp=drivesdk"
+        },
+        "options": {
+          "binaryPropertyName": "data",
+          "fileName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -624,
+        -176
+      ],
+      "id": "dc7a451c-c3ee-48b0-84f5-75fb65985b51",
+      "name": "Download file",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "notesInFlow": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "OjD0XYMBqrPNFGd0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        64
+      ],
+      "id": "1276ab35-93f7-4ec4-b98f-51cf473617a7",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -256,
+        64
+      ],
+      "id": "3fbb616a-ebc9-4b69-9968-fd6a1d808a5d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Consider the question {{ $json.body.question }}. And respond accordingly.\n\nIf the question is about fixed broadband, provide the information in a concise and clear format, presenting tables, graphs, or lists whenever possible.\n\nExample queries:\n- How many accesses were there in a given year?\n- What was the evolution by technology (fiber, cable, radio)?\n- Is there a difference in access by region?\n\nAlways respond in Portuguese.\n\nIf data is not available, state this clearly and suggest alternative analysis options.",
+        "options": {
+          "systemMessage": "You are a telecommunications data assistant specializing in information about fixed broadband access.\n\nYour role is to help users consult, interpret, and answer questions about available data, providing organized, clear information in accessible language. You should always respond in Portuguese.\n\nMain rules:\n- Always assume that the user is requesting information about fixed broadband access data.\n- When possible, present the information in a summary table or highlighted.\n- If the user requests historical progress, present it chronologically (e.g., year by year).\n- If the requested data is not available, state this clearly and offer alternative analysis options.\n- Use objective language, without unnecessary technical terms.\n\nExample of expected behavior:\nUser: \"How many accesses were there in 2022?\"\n\nAgent: \"In 2022, there were approximately XX million fixed broadband accesses.\"\n\nUser: \"Show the progress by technology.\"\n\nAgent: \"Here's the trend in access by technology:\n- 2020: Fiber 20M, Cable 15M, Radio 2M\n- 2021: Fiber 25M, Cable 14M, Radio 1.8M\n- 2022: Fiber 30M, Cable 13M, Radio 1.5M\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -608,
+        64
+      ],
+      "id": "a801a1a0-f0d2-4a3f-9451-cb3bf85f145d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "FIEC",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -832,
+        64
+      ],
+      "id": "ac0be30b-ed80-4b25-b0c0-239c838c1837",
+      "name": "Webhook",
+      "webhookId": "6c8f958d-44d5-44dd-ad20-31a9dd7ed21e"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to query information associated with the csv file in the database."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -320,
+        176
+      ],
+      "id": "f8aa6d89-9bf2-48c6-8b29-74fe5f6c6e6c",
+      "name": "Answer questions with a vector store1"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryXata",
+      "typeVersion": 1.4,
+      "position": [
+        -512,
+        368
+      ],
+      "id": "913af646-82eb-40c8-90c3-80ca069ae66b",
+      "name": "Xata",
+      "credentials": {
+        "xataApi": {
+          "id": "DjeM9GvILwKHJOzR",
+          "name": "Xata Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        304
+      ],
+      "id": "89536416-9123-4214-8f25-faf3c8bea0ca",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "4NEmLj5ykoyhz6pp",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5",
+          "mode": "list",
+          "cachedResultName": "gpt-5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -608,
+        256
+      ],
+      "id": "d0cdbc2a-99c8-4a43-921f-e2b5bae77906",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "pTyrMxjaeQeSuHdn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        432
+      ],
+      "id": "f54a3056-6914-4f83-af63-2dda87869911",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "pTyrMxjaeQeSuHdn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5",
+          "mode": "list",
+          "cachedResultName": "gpt-5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        272
+      ],
+      "id": "efe0aaab-0a83-4baf-af0a-5af60cee2d17",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "pTyrMxjaeQeSuHdn",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        -176
+      ],
+      "id": "a0d39012-578c-4324-8432-1c73c7fd6708",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "content": "## Questão 5\n- Otimizei o fluxo para atender ao volume de usuários utilizando serviços escaláveis, como Amazon S3 para armazenamento, Xata como banco de dados em memória e Pinecone como vector store.\n- Integrei as APIs através de credenciais de acesso seguras e protocolos REST.\n- Implementaria monitoramento com verificações de logs centralizados e configuração de alertas para notificação imediata em caso de erros ou anomalias.",
+        "height": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1184,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "2cab5c55-2c44-46ea-bf81-49f08aace320",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Xata": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store1",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f54fdd13-ce32-4d98-9eb9-df7af5d65e57",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "baa1ed8e40371bdd7e54070a9994a147a5144fca1bbc3c63f39b72f0fbc8a278"
+  },
+  "id": "488GZjKsLT1Sts3J",
+  "tags": []
+}
