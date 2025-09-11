@@ -19,3 +19,10 @@ Solução de engenharia de dados para automatizar o fluxo de coleta, armazenamen
 - **N8N** para orquestração de workflows e integrações
 - **API REST** para disponibilização dos dados
 - **Firebase Studio** utilizando uma interface gráfica para processamento de linguagem natural
+
+## Pontos de melhoria
+
+1. Adicionar variáveis de ambiente para as credenciais e dados necessários
+2. Otimizar o processo de transformação e carregamento para o S3
+3. Aprimorar a UI para utilização dos usuários finais
+4. Implementar teste de segurança e performance 
