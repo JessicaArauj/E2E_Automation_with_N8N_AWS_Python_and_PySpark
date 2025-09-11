@@ -14,11 +14,11 @@ Solução de engenharia de dados para automatizar o fluxo de coleta, armazenamen
 
 ## Tecnologias utilizadas
 
-- **Python** e **PySpark** para o processo de ETL
-- **AWS S3** utilizando um bucket como Data Lake
-- **N8N** para orquestração de workflows e integrações
-- **API REST** para disponibilização dos dados
-- **Firebase Studio** utilizando uma interface gráfica para processamento de linguagem natural
+1. **Python** e **PySpark** para o processo de ETL
+2. **AWS S3** utilizando um bucket como Data Lake
+3. **N8N** para orquestração de workflows e integrações
+4. **API REST** para disponibilização dos dados
+5. **Firebase Studio** utilizando uma interface gráfica para processamento de linguagem natural
 
 ## Pontos de melhoria
 
