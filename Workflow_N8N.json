@@ -1,0 +1,1183 @@
+{
+  "name": "Workflow N8N",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        1824,
+        -112
+      ],
+      "id": "9a3482d5-daa8-48c1-868b-8ad2ee49930a",
+      "name": "When chat message received",
+      "webhookId": "bd55caac-3156-4a5e-9b55-03ccc7a2f75c"
+    },
+    {
+      "parameters": {
+        "bucketName": "fiec-teste-buckets",
+        "fileKey": "={{ $json.Key }}",
+        "binaryPropertyName": "data_csv"
+      },
+      "type": "n8n-nodes-base.awsS3",
+      "position": [
+        784,
+        688
+      ],
+      "id": "b076abf4-1586-45c7-b57e-c9f0c109bb6e",
+      "name": "Download CSV Files",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "binaryMode": "specificField",
+        "loader": "csvLoader",
+        "binaryDataKey": "data_csv",
+        "options": {
+          "separator": ","
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        1424,
+        1056
+      ],
+      "id": "23b88f1f-5b08-4672-a646-3734be4eaa37",
+      "name": "Default Data Loader1",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "# Ingesting CSV File Data Into Vector Store",
+        "height": 752,
+        "width": 1424,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        256,
+        576
+      ],
+      "typeVersion": 1,
+      "id": "229010c1-3ebc-4eaa-a4c5-90eaceade1b8",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# AI Agent with RAG",
+        "height": 752,
+        "width": 1424,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1712,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "b98395d1-ec73-485f-b839-ab09308fea1d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        1424,
+        32
+      ],
+      "id": "caa8b3b6-73a4-4f98-8707-c24a1b2df58e",
+      "name": "Default Data Loader",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "# Ingesting PDF File Data Into Vector Store",
+        "height": 752,
+        "width": 1424,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        256,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "da55185a-e4b7-4926-a53c-ebfca7a1211d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "data_pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        1008,
+        -112
+      ],
+      "id": "72b132a7-58fb-4af2-a64b-2fbf92958c32",
+      "name": "Extract PDF Text",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fileKey": "={{ $json.Key }}",
+        "binaryPropertyName": "data_pdf"
+      },
+      "type": "n8n-nodes-base.awsS3",
+      "position": [
+        784,
+        -112
+      ],
+      "id": "fca09f40-080e-4df1-98b8-5bedbcd06ecf",
+      "name": "Download PDF File",
+      "typeVersion": 2,
+      "credentials": {
+        "aws": {
+          "id": "4spkOQtG5mP4tzty",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Search for and retrieve all relevant documents, CSV data, and PDF reports on fixed broadband internet access in Brazil, with full metadata extraction.\n\nREQUIRED SEARCH PARAMETERS\n1. Always search with maximum relevance\n2. Include metadata filtering by document type, source, and geographic scope\n3. Return complete contextual excerpts with surrounding information\n4. Prioritize data integrity and metadata richness\n\nDATA CATEGORIES TO SEARCH:\n1. Year (e.g., 2023, 2024)\n2. Month (e.g., January, Q1, December)\n3. State (Federal Unit)\n4. Municipality\n5. IBGE Code\n6. Density (Density per 100 households)\n7. Geographic Density Level\n8. Region (North, Northeast, etc.)\n9. Technology Type (Fiber, DSL, Cable, etc.)\n10. Provider/Operator\n11. Speed Tiers\n\nMETADATA TO EXTRACT AND DISPLAY:\n\nSOURCE IDENTIFICATION:\n1. File Name: [Full file name]\n2. File Type: [CSV/PDF/XLSX]\n3. Author/Publisher: [Anatel/IBGE/Operator]\n4. Source Organization: [National Telecommunications Agency - Anatel]\n\nTEMPORAL METADATA:\n1. Publication Date: [Date of publication]\n2. Data Reference Period: [Year/Month of reference]\n3. Update Frequency: [Monthly/Quarterly/Annual]\n4. Vintage Date: [Date of last data update]\n\nGEOGRAPHIC METADATA:\n1. Geographic Coverage: [National/Regional/State/Municipal]\n2. States Covered: [List of states]\n3. Municipalities Covered: [Number or list]\n4. IBGE Geographic Scope: [Level of detail]\n\nDATA QUALITY METADATA:\n1. Data Granularity: [Aggregation level]\n2. Metric Definition: [Formal metric definition]\n3. Unit of Measure: [Accesses/100 households]\n4. Confidence Level: [Data quality]\n5. Sample Size: [Where applicable]\n\nSEARCH STRATEGY:\n1. Use semantic similarity with comprehensive context capture\n2. Include synonym matching: \"density\" = \"penetration\" = \"coverage\"\n3. Filter by metadata fields: type=csv, topic=fixed_broadband_brazil\n4. Prioritize the most recent data but include historical context\n5. Ensure geographic and temporal relevance of the query\n6. Extract and cross-reference multiple data sources\n\nRESPONSE STRUCTURE REQUIREMENT:\nFor each relevant document found, ALWAYS present:\n1. File: [filename.ext]\n2. Source: [Anatel/IBGE/Operator]\n3. Period: [MM/YYYY]\n4. Coverage: [Geographic scope]\n5. Metrics: [Key data points]\n6. Context: [How this data answers the query]\n\nQUALITY VALIDATION:\n1. Verify data consistency across sources\n2. Verify temporal relevance\n3. Confirm geographic alignment\n4. Validate metric definitions\n5. Cross-reference with official sources\n",
+        "topK": "=20"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "position": [
+        2320,
+        0
+      ],
+      "id": "6fea02aa-0b7f-4cf1-a941-4262076aea69",
+      "name": "Vector Store Search Tool",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        2832,
+        -112
+      ],
+      "id": "0d85836e-8417-4462-9392-7834b7e4fc80",
+      "name": "No Operation, do nothing2",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        2608,
+        -112
+      ],
+      "id": "78435626-ba30-4674-9dde-cf12c6731f10",
+      "name": "Respond to Webhook1",
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "You are a technical expert in fixed broadband access data in Brazil. Your role is to respond to queries EXCLUSIVELY based on the documents and data retrieved from the official repository, strictly following the established guidelines. Always structure your answers clearly.\n\nSTRICT RESPONSE RULES\nUse ONLY information contained in the retrieved documents.\nAlways identify the specific source, including the document title.\nAlways include the reference period, geographic coverage, and data type.\nIf information is insufficient, explicitly state the limitation.\nFormat responses in a clear and organized manner.\n\nSUPPORTED DATA CATEGORIES\nYears (2023, 2024, etc.)\nMonths and quarters\nStates and regions\nMunicipalities with IBGE code\nDensity per 100 households\nAccess technologies\nOperators and providers\nSpeed tiers\n\nQUALITY ASSURANCE\nVerify consistency across sources\nConfirm temporal relevance\nValidate geographic alignment\nMaintain accuracy in metric definitions"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2016,
+        -112
+      ],
+      "id": "16d988ad-9026-4081-bc74-a7e32a627c87",
+      "name": "AI Agent1",
+      "typeVersion": 2.2,
+      "alwaysOutputData": false,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "position": [
+        2240,
+        192
+      ],
+      "id": "07fdf825-2664-4753-b4d3-839706ba7119",
+      "name": "Postgres PGVector Store1",
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.Key }}",
+              "rightValue": ".csv",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              },
+              "id": "4527c3ed-656c-4651-bc4c-80a69ebe12f3"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        576,
+        -112
+      ],
+      "id": "5480fa67-e0ba-4ddc-80e0-17a55ab4eb25",
+      "name": "Filter PDF",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "page-content-assignment",
+              "name": "pageContent",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "metadata-assignment",
+              "name": "metadata",
+              "value": "={{ { source: $json.Key, type: \"pdf\", topic: \"internet_fixa_brasil\" } }}",
+              "type": "object"
+            },
+            {
+              "id": "e23d4b24-83fe-452b-8a87-7958dc787f82",
+              "name": "author",
+              "value": "={{ $json.metadata.author }}",
+              "type": "string"
+            },
+            {
+              "id": "4e81d1a4-2185-41fc-9ebf-cd0cec49bfd7",
+              "name": "email",
+              "value": "={{ $json.metadata.contactInfo.emails[0] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1200,
+        -112
+      ],
+      "id": "fc0182ce-07b6-49a0-ae98-97b1d257667b",
+      "name": "Prepare Document",
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "bucket",
+        "operation": "search",
+        "additionalFields": {
+          "prefix": "processed_data/"
+        }
+      },
+      "type": "n8n-nodes-base.awsS3",
+      "position": [
+        368,
+        -112
+      ],
+      "id": "507022d7-a9ff-4766-b49f-788fd189fcd9",
+      "name": "Search a bucket",
+      "typeVersion": 2,
+      "credentials": {
+        "aws": {
+          "id": "4spkOQtG5mP4tzty",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "position": [
+        1376,
+        -112
+      ],
+      "id": "c148eafc-2c3e-42b0-a708-893a9845538b",
+      "name": "Postgres PGVector Store PDF",
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "embeddingBatchSize": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "position": [
+        1376,
+        896
+      ],
+      "id": "f2b191ea-04b7-420a-815b-ee356ec043e9",
+      "name": "Postgres PGVector Store CSV",
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Key",
+        "include": "allOtherFields",
+        "options": {
+          "includeBinary": true
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        688
+      ],
+      "id": "d668ccc7-d029-44bc-9e2d-49051bc70c4e",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($binary.data_csv) {\n  $binary.data_csv.mimeType = \"text/csv\";\n} else {\n  throw new Error(\"Binary data 'data_csv' is missing\");\n}\nreturn [{ json: $json, binary: $binary }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        688
+      ],
+      "id": "fb8fd799-c205-4e32-a9d0-a38f99c61bab",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1392,
+        688
+      ],
+      "id": "7a09a1a9-586c-4579-ab7d-499b3843a8e4",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        688
+      ],
+      "id": "a6c5f4e3-8d21-4676-a5d1-67225907bdf3"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2112,
+        32
+      ],
+      "id": "90bdd2e7-ed5f-4e47-8684-6dd9bfb26380",
+      "name": "Postgres Chat Memory"
+    },
+    {
+      "parameters": {
+        "content": "# AI Agent with RAG and Firebase Studio",
+        "height": 752,
+        "width": 1424,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1712,
+        576
+      ],
+      "typeVersion": 1,
+      "id": "d3abb0d4-6f04-4d43-97fa-fe46963ea4e9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "description": "Search for and retrieve all relevant documents, CSV data, and PDF reports on fixed broadband internet access in Brazil, with full metadata extraction.\n\nREQUIRED SEARCH PARAMETERS\n1. Always search with maximum relevance\n2. Include metadata filtering by document type, source, and geographic scope\n3. Return complete contextual excerpts with surrounding information\n4. Prioritize data integrity and metadata richness\n\nDATA CATEGORIES TO SEARCH:\n1. Year (e.g., 2023, 2024)\n2. Month (e.g., January, Q1, December)\n3. State (Federal Unit)\n4. Municipality\n5. IBGE Code\n6. Density (Density per 100 households)\n7. Geographic Density Level\n8. Region (North, Northeast, etc.)\n9. Technology Type (Fiber, DSL, Cable, etc.)\n10. Provider/Operator\n11. Speed Tiers\n\nMETADATA TO EXTRACT AND DISPLAY:\n\nSOURCE IDENTIFICATION:\n1. File Name: [Full file name]\n2. File Type: [CSV/PDF/XLSX]\n3. Author/Publisher: [Anatel/IBGE/Operator]\n4. Source Organization: [National Telecommunications Agency - Anatel]\n\nTEMPORAL METADATA:\n1. Publication Date: [Date of publication]\n2. Data Reference Period: [Year/Month of reference]\n3. Update Frequency: [Monthly/Quarterly/Annual]\n4. Vintage Date: [Date of last data update]\n\nGEOGRAPHIC METADATA:\n1. Geographic Coverage: [National/Regional/State/Municipal]\n2. States Covered: [List of states]\n3. Municipalities Covered: [Number or list]\n4. IBGE Geographic Scope: [Level of detail]\n\nDATA QUALITY METADATA:\n1. Data Granularity: [Aggregation level]\n2. Metric Definition: [Formal metric definition]\n3. Unit of Measure: [Accesses/100 households]\n4. Confidence Level: [Data quality]\n5. Sample Size: [Where applicable]\n\nSEARCH STRATEGY:\n1. Use semantic similarity with comprehensive context capture\n2. Include synonym matching: \"density\" = \"penetration\" = \"coverage\"\n3. Filter by metadata fields: type=csv, topic=fixed_broadband_brazil\n4. Prioritize the most recent data but include historical context\n5. Ensure geographic and temporal relevance of the query\n6. Extract and cross-reference multiple data sources\n\nRESPONSE STRUCTURE REQUIREMENT:\nFor each relevant document found, ALWAYS present:\n1. File: [filename.ext]\n2. Source: [Anatel/IBGE/Operator]\n3. Period: [MM/YYYY]\n4. Coverage: [Geographic scope]\n5. Metrics: [Key data points]\n6. Context: [How this data answers the query]\n\nQUALITY VALIDATION:\n1. Verify data consistency across sources\n2. Verify temporal relevance\n3. Confirm geographic alignment\n4. Validate metric definitions\n5. Cross-reference with official sources",
+        "topK": "=20"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "position": [
+        2320,
+        800
+      ],
+      "id": "6dd6585c-d0b4-412a-a8fe-93ca6f04b07b",
+      "name": "Vector Store Search Tool1",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        2832,
+        688
+      ],
+      "id": "73edc696-4934-490a-bd21-263deba5a007",
+      "name": "No Operation, do nothing",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        2608,
+        688
+      ],
+      "id": "dc364ffb-4fc7-4f60-9643-2a4fe477b870",
+      "name": "Respond to Webhook",
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.question }}",
+        "options": {
+          "systemMessage": "You are a technical specialist in fixed broadband access data in Brazil. Your role is to respond to queries EXCLUSIVELY based on documents and data retrieved from the official repository, strictly following established guidelines. Always structure your responses.\n\nSTRICT RESPONSE RULES\nUse ONLY information contained in the retrieved documents.\n\n1. Always identify the specific source, including the document title\n2. Always include the reference period, geographic coverage, and type of data\n3. If information is insufficient, explicitly declare the limitation\n4. Format responses clearly and in an organized manner\n\nSUPPORTED DATA CATEGORIES\n1. Years (2023, 2024, etc.)\n2. Months and quarters\n3. States and regions\n4. Municipalities with IBGE code\n5. Density per 100 households\n6. Access technologies\n7. Operators and providers\n8. Speed tiers\n\nQUALITY ASSURANCE\n1. Verify consistency across sources\n2. Confirm temporal relevance\n3. Validate geographic alignment\n4. Maintain accuracy in metric definitions"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2016,
+        688
+      ],
+      "id": "d3fc0df9-5eec-403f-a6d3-8b2060138503",
+      "name": "AI Agent",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "position": [
+        2240,
+        960
+      ],
+      "id": "3c2cc6f8-68ef-4d55-b361-1442d4f62573",
+      "name": "Postgres PGVector Store",
+      "typeVersion": 1.3,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "TelAI",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        1808,
+        688
+      ],
+      "id": "ee91f740-4072-4355-8f73-0f1ddc48c918",
+      "name": "Webhook1",
+      "webhookId": "e0dc324e-e7c7-4f2e-a5e6-a1681cf3b169"
+    },
+    {
+      "parameters": {
+        "resource": "bucket",
+        "operation": "search",
+        "additionalFields": {
+          "prefix": "processed_data/"
+        }
+      },
+      "type": "n8n-nodes-base.awsS3",
+      "position": [
+        368,
+        688
+      ],
+      "id": "7f018109-d86a-49de-86f0-bb52924930a1",
+      "name": "Search a bucket1",
+      "typeVersion": 2,
+      "credentials": {
+        "aws": {
+          "id": "4spkOQtG5mP4tzty",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.Key }}",
+              "rightValue": "_Colunas",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              },
+              "id": "4527c3ed-656c-4651-bc4c-80a69ebe12f3"
+            },
+            {
+              "id": "acdc25c8-2a1a-4150-a2ac-ecb69431b9c0",
+              "leftValue": "={{ $json.Key }}",
+              "rightValue": ".pdf",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "f2c18c4a-500f-4076-8da0-8fe415d592ca",
+              "leftValue": "={{ $json.Key }}",
+              "rightValue": "Densidade",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        576,
+        688
+      ],
+      "id": "8f1b8cbb-fc0f-408b-bc54-da1590dee382",
+      "name": "Filter CSV",
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.question }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2112,
+        912
+      ],
+      "id": "f7059cdd-2a22-4e7d-b9bf-8f9bf91b43d1",
+      "name": "Postgres Chat Memory1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1376,
+        144
+      ],
+      "id": "d808913d-2f5b-4178-be05-945cebd96bb5",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "SLtDzJrtko7vcZd7",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2016,
+        144
+      ],
+      "id": "e85d0393-799d-4856-b44a-a6e4828241e0",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "SLtDzJrtko7vcZd7",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2240,
+        352
+      ],
+      "id": "47bd9e18-4fcd-4b0a-a493-3eca9280c9ad",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "SLtDzJrtko7vcZd7",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2624,
+        96
+      ],
+      "id": "c097f3a1-6e6c-4afe-a9d8-d82c7c7f7d92",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "SLtDzJrtko7vcZd7",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2016,
+        1008
+      ],
+      "id": "81b8ee1d-cd2f-4c88-8de0-9fca08f24651",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "SLtDzJrtko7vcZd7",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1376,
+        1168
+      ],
+      "id": "d3791038-e80a-4db1-ace2-8680022a7de0",
+      "name": "Embeddings OpenAI2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2240,
+        1152
+      ],
+      "id": "21436d2f-ba4d-4316-9942-93484c9abd54",
+      "name": "Embeddings OpenAI3",
+      "credentials": {
+        "openAiApi": {
+          "id": "SLtDzJrtko7vcZd7",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2624,
+        896
+      ],
+      "id": "ae97f2dd-4c66-4914-8dc4-bb21d20159ad",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "SLtDzJrtko7vcZd7",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download CSV Files": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader1": {
+      "ai_document": [
+        [
+          {
+            "node": "Postgres PGVector Store CSV",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Postgres PGVector Store PDF",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Text": {
+      "main": [
+        [
+          {
+            "node": "Prepare Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF File": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Search Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Search Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter PDF": {
+      "main": [
+        [
+          {
+            "node": "Download PDF File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Document": {
+      "main": [
+        [
+          {
+            "node": "Postgres PGVector Store PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search a bucket": {
+      "main": [
+        [
+          {
+            "node": "Filter PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Postgres PGVector Store CSV",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Search Tool1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Search Tool1",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search a bucket1": {
+      "main": [
+        [
+          {
+            "node": "Filter CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter CSV": {
+      "main": [
+        [
+          {
+            "node": "Download CSV Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store PDF",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Search Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store CSV",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI3": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Search Tool1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7edc8922-4fab-4a67-b362-f5b6968f0226",
+  "meta": {
+    "instanceId": "0d2701c28760067c3a5c9c9e2b8075af24438eb2d31fa7f6a7b6102047ea41aa"
+  },
+  "id": "CO1Np7pHxWOQj70K",
+  "tags": [
+    {
+      "createdAt": "2025-09-19T17:57:05.513Z",
+      "updatedAt": "2025-09-19T17:57:05.513Z",
+      "id": "in10F5gosMlfmTjM",
+      "name": "AWS S3"
+    },
+    {
+      "createdAt": "2025-09-19T17:57:05.469Z",
+      "updatedAt": "2025-09-19T17:57:05.469Z",
+      "id": "JllJEWEKVeikKoDA",
+      "name": "Automation Pipeline"
+    },
+    {
+      "createdAt": "2025-09-19T17:57:05.494Z",
+      "updatedAt": "2025-09-19T17:57:05.494Z",
+      "id": "DVl3HXzRGldCzFBf",
+      "name": "Agente AI with RAG"
+    }
+  ]
+}
