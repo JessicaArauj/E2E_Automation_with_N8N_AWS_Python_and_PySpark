@@ -1,4 +1,4 @@
-# E2E Automation with N8N, AWS, Python and PySpark
+# E2E automation with N8N, AWS, Python and PySpark
 
 This project implements an **end-to-end automation workflow** for collecting, processing, and exposing **broadband access data in Brazil**. It allows automated extraction, transformation and storage in a **Data Lake on AWS S3**, and provides access via a **REST API** as well as **natural language queries** through a user-friendly interface.
 
