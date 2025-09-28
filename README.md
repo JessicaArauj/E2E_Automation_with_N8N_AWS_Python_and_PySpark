@@ -23,7 +23,23 @@ This project implements an **end-to-end automation workflow** for collecting, pr
 
 - **Data Access**  
   - Provides a **REST API** to query processed datasets.  
-  - Supports **natural language queries** with optional LLM integration via Firebase Studio.  
+  - Supports **natural language queries** with optional LLM integration via Firebase Studio.
+ 
+## How to use
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/JessicaArauj/E2E_Automation_with_N8N_AWS_Python_and_PySpark
+```
+
+2. Navigate to the file of interest:
+
+```bash
+cd extraction.ipynb
+```
+
+3. Open the jupyter notebook and run the code step by step.
 
 ## Installation
 
